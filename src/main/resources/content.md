@@ -14,4 +14,11 @@
 13. StreamFind
 14. StreamReduce
 15. NumericStream
-16. 
+16. Trader
+17. Transaction
+18. StreamAction
+19. Person
+20. Car
+21. Insurance
+22. NullpointerException
+23. OptionalUsage
