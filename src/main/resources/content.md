@@ -22,3 +22,7 @@
 21. Insurance
 22. NullpointerException
 23. OptionalUsage
+24. OptionInAction
+25. CollectorIntroduce
+26. CollectorsAction
+27. CollectorsAction2

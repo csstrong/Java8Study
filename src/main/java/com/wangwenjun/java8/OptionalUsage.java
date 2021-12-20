@@ -29,17 +29,16 @@ public class OptionalUsage {
 
         objectOptional.orElseThrow(() -> new RuntimeException("Not have reference"));
 */
-/*
         Insurance insurance = insuranceOptional1.filter(i -> i.getName() != null).get();
-        System.out.println(insurance);*/
+        System.out.println(insurance);
 
-/*        Optional<String> nameOptional = insuranceOptional1.map(i -> i.getName());
+        Optional<String> nameOptional = insuranceOptional1.map(i -> i.getName());
 
         System.out.println(nameOptional.orElse("empty Value"));
 
         System.out.println(nameOptional.isPresent());
 
-        nameOptional.ifPresent(System.out::println);*/
+        nameOptional.ifPresent(System.out::println);
 
 
         System.out.println(getInsuranceName(null));

@@ -57,3 +57,33 @@ list.sort(Comparator.comparing(Apple::getColor));
 - LongStream
 - <<Stream in really action>> & number
 - NumericStream
+
+function programming style\
+
+You just tell "how" not "do what".\
+
+满分5\
+
+lambda              1\
+Stream              3\
+Function interface  1\
+Optional            1-1.5\
+Collector           2-2.5\
+
+(Akka/Docker/Hadoop/Hbase/JVM/Kafka/Linux-c/Lucence/Mahout/Nginx/NIO、AIO、Mina、Netty\
+    /Pig/Restful/Scala/Spark/Squid/Storm/ZooKeeper)\
+(实战 Concordion/Flume/Hive/Java8/MapReduce/Oozie/Powermock/Sqoop/Yarn)\
+\
+1. Reducing and summarizing stream elements to a single value
+2. Grouping elements
+3. Partitioning elements
+4. user custom the collector.\
+\
+averagingDouble()\
+averagingInt()\
+averagingLong()\
+collectingAndThen()\
+counting()\
+groupingBy()\
+groupingBY()\
+   
