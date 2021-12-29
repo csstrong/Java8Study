@@ -26,3 +26,7 @@
 25. CollectorIntroduce
 26. CollectorsAction
 27. CollectorsAction2
+28. CollectorsAction3
+29. CollectorsAction4
+30. ToListCollector
+31. CustomerCollectionAction

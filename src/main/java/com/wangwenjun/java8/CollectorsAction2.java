@@ -1,5 +1,7 @@
 package com.wangwenjun.java8;
 
+import org.junit.Test;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -17,18 +19,19 @@ import static com.wangwenjun.java8.CollectorsAction.menu;
 public class CollectorsAction2 {
 
     public static void main(String[] args) {
-        testGroupingByConcurrentWithFunction();
-        testGroupingByConcurrentWithFunctionAndCollector();
-        testGroupingByConcurrentWithFunctionAndSupplierAndCollector();
-        testJoining();
-        testJoiningWithDelimiter();
-        testJoiningWithDelimiterAndPrefixAndSuffix();
-        testMapping();
-        testMaxBy();
-        testMinBy();
+        //testGroupingByConcurrentWithFunction();
+        //testGroupingByConcurrentWithFunctionAndCollector();
+        //testGroupingByConcurrentWithFunctionAndSupplierAndCollector();
+        //testJoining();
+        //testJoiningWithDelimiter();
+        //testJoiningWithDelimiterAndPrefixAndSuffix();
+        //testMapping();
+        //testMaxBy();
+        //testMinBy();
     }
 
-    private static void testGroupingByConcurrentWithFunction() {
+    @Test
+    public void testGroupingByConcurrentWithFunction() {
         System.out.println("testGroupingByConcurrentWithFunction");
 
         ConcurrentMap<Dish.Type, List<Dish>> collect = menu.stream().collect(Collectors.groupingByConcurrent(Dish::getType));
@@ -36,55 +39,62 @@ public class CollectorsAction2 {
         Optional.ofNullable(collect).ifPresent(System.out::println);
     }
 
-
-    private static void testGroupingByConcurrentWithFunctionAndCollector() {
+    @Test
+    public void testGroupingByConcurrentWithFunctionAndCollector() {
         System.out.println("testGroupingByConcurrentWithFunctionAndCollector");
         ConcurrentMap<Dish.Type, Double> collect = menu.stream()
-                .collect(Collectors.groupingByConcurrent(Dish::getType, Collectors.averagingInt(Dish::getCalories)));
+            .collect(Collectors.groupingByConcurrent(Dish::getType, Collectors.averagingInt(Dish::getCalories)));
         Optional.ofNullable(collect).ifPresent(System.out::println);
     }
 
-    private static void testGroupingByConcurrentWithFunctionAndSupplierAndCollector() {
+    @Test
+    public void testGroupingByConcurrentWithFunctionAndSupplierAndCollector() {
         System.out.println("testGroupingByConcurrentWithFunctionAndSupplierAndCollector");
         ConcurrentMap<Dish.Type, Double> collect = menu.stream()
-                .collect(Collectors.groupingByConcurrent(Dish::getType, ConcurrentSkipListMap::new, Collectors.averagingInt(Dish::getCalories)));
+            .collect(Collectors.groupingByConcurrent(Dish::getType, ConcurrentSkipListMap::new, Collectors.averagingInt(Dish::getCalories)));
         Optional.of(collect.getClass()).ifPresent(System.out::println);
         Optional.ofNullable(collect).ifPresent(System.out::println);
     }
 
-    private static void testJoining() {
+    @Test
+    public void testJoining() {
         System.out.println("testJoining");
         Optional.of(menu.stream().map(Dish::getName).collect(Collectors.joining()))
-                .ifPresent(System.out::println);
+            .ifPresent(System.out::println);
     }
 
-    private static void testJoiningWithDelimiter() {
+    @Test
+    public void testJoiningWithDelimiter() {
         System.out.println("testJoiningWithDelimiter");
         Optional.of(menu.stream().map(Dish::getName).collect(Collectors.joining(",")))
-                .ifPresent(System.out::println);
+            .ifPresent(System.out::println);
     }
 
-    private static void testJoiningWithDelimiterAndPrefixAndSuffix() {
+    @Test
+    public void testJoiningWithDelimiterAndPrefixAndSuffix() {
         System.out.println("testJoiningWithDelimiterAndPrefixAndSuffix");
         Optional.of(menu.stream().map(Dish::getName).collect(Collectors.joining(",", "Names[", "]")))
-                .ifPresent(System.out::println);
+            .ifPresent(System.out::println);
     }
 
-    private static void testMapping() {
+    @Test
+    public void testMapping() {
         System.out.println("testMapping");
         Optional.of(menu.stream().collect(Collectors.mapping(Dish::getName, Collectors.joining(","))))
-                .ifPresent(System.out::println);
+            .ifPresent(System.out::println);
     }
 
-    private static void testMaxBy() {
+    @Test
+    public void testMaxBy() {
         System.out.println("testMaxBy");
         menu.stream().collect(Collectors.maxBy(Comparator.comparingInt(Dish::getCalories)))
-                .ifPresent(System.out::println);
+            .ifPresent(System.out::println);
     }
 
-    private static void testMinBy() {
+    @Test
+    public void testMinBy() {
         System.out.println("testMinBy");
         menu.stream().collect(Collectors.minBy(Comparator.comparingInt(Dish::getCalories)))
-                .ifPresent(System.out::println);
+            .ifPresent(System.out::println);
     }
 }
