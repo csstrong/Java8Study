@@ -30,3 +30,14 @@
 29. CollectorsAction4
 30. ToListCollector
 31. CustomerCollectionAction
+32. ParallelProcessing
+33. ForkJoinPoolTest
+34. AccumulatorRecursiveTask
+35. AccumulatorRecursiveAction
+36. SpliteratorInAction
+37. DefaultInAction
+38. FutureInAction
+39. FutureInAction1
+40. FutureInAction2
+41. CompletableFutureInAction
+42. CompletableFutureInAction1
