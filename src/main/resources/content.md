@@ -39,5 +39,11 @@
 38. FutureInAction
 39. FutureInAction1
 40. FutureInAction2
-41. CompletableFutureInAction
-42. CompletableFutureInAction1
+41. FutureInAction2
+42. CompletableFutureInAction
+43. CompletableFutureInAction1
+44. CompletableFutureInAction2
+45. CompletableFutureInAction3
+46. CompletableFutureInAction4
+47. CompletableFutureInAction5
+48. DateTest
