@@ -1,5 +1,7 @@
 package com.wangwenjun.java8;
 
+import java.util.function.Function;
+
 /**
  * Created by wangwenjun on 2016/10/22.
  */
@@ -28,7 +30,7 @@ public class Transaction {
 
     public String toString() {
         return "{" + this.trader + ", " +
-                "year: " + this.year + ", " +
-                "value:" + this.value + "}";
+            "year: " + this.year + ", " +
+            "value:" + this.value + "}";
     }
 }
