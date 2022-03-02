@@ -1,15 +1,20 @@
 package com.wangwenjun.java8;
 
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /***************************************
  * @author:Alex Wang
@@ -100,9 +105,10 @@ public class DateTest {
     @Test
     public void testDuration() {
         LocalTime time = LocalTime.now();
-        LocalTime beforeTime = time.minusHours(1);
+        LocalTime beforeTime = time.minusHours(-1);
         Duration duration = Duration.between(time, beforeTime);
         System.out.println(duration.toHours());
+        System.out.println(duration.toMillis());
     }
 
     @Test
@@ -136,5 +142,61 @@ public class DateTest {
         String date2 = "2016-11-13";
         LocalDate localDate2 = LocalDate.parse(date2, mySelfFormatter);
         System.out.println(localDate2);
+    }
+
+    /**
+     * 计算LocalDateTime  两个时间的时间差
+     */
+    @Test
+    public void computeBetweenLocalDateTime(){
+        LocalDate localDate = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, time);
+        System.out.println(localDateTime);
+
+        LocalDateTime now = LocalDateTime.now();
+        //DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:MM:SS");
+        //String dateStr = now.format(dateTimeFormatter);
+        //System.out.println(dateStr);
+        LocalDateTime localDateTime1 = now.minusMinutes(5);
+        System.out.println(localDateTime1);
+
+        Duration between = Duration.between(localDateTime, now);
+        System.out.println(between.toMillis());
+    }
+
+    @Test
+    public void tr(){
+        final LocalDateTime fromDate = LocalDateTime.now();
+        final LocalDateTime toDate = LocalDateTime.now().plusHours(56);
+
+        long minutes = ChronoUnit.MINUTES.between(fromDate, toDate);
+        long hours = ChronoUnit.HOURS.between(fromDate, toDate);
+
+        System.out.println(minutes);
+        System.out.println(hours);
+//        3360
+//        56
+    }
+
+    @Test
+    public void tr2(){
+        final LocalDateTime fromDate = LocalDateTime.now();
+        final LocalDateTime toDate = LocalDateTime.now().plusHours(56);
+
+        final Duration duration = Duration.between(fromDate, toDate);
+
+        final long minuts = duration.toMinutes();
+        final long hours = duration.toHours();
+
+        System.out.println(minuts);
+        System.out.println(hours);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:MM:SS");
+        String dateStr = fromDate.format(dateTimeFormatter);
+        System.out.println(dateStr);
+
+//        3360
+//        56
     }
 }
