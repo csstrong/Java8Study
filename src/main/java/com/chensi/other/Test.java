@@ -1,6 +1,7 @@
 package com.chensi.other;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /***********************************
  * @author chensi
@@ -20,5 +21,11 @@ public class Test {
         String s3 = "2022";
         System.out.println(s1.compareTo(s2) >= 0);
         System.out.println(s1.compareTo(s3) <= 0);
+    }
+
+    @org.junit.Test
+    public void generateUUID(){
+        UUID uuid = UUID.randomUUID();
+        System.out.println(uuid.toString().replace("-",""));
     }
 }
