@@ -1,12 +1,6 @@
 package com.chensi.internet.demo;
 
-/***********************************
- * @author chensi
- * @date 2022/3/2 17:22
- ***********************************/
-
 import java.util.Map;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 
