@@ -109,6 +109,7 @@ public class DateTest {
         Duration duration = Duration.between(time, beforeTime);
         System.out.println(duration.toHours());
         System.out.println(duration.toMillis());
+        System.out.println(duration.toMinutes());
     }
 
     @Test

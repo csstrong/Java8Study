@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -75,20 +76,79 @@ public class Test {
     }
 
     @org.junit.Test
-    public void test3(){
+    public void test3() {
         Map<JSONObject, JSONObject> dataMap = new HashMap<>();
-        JSONObject jsonKey=new JSONObject();
-        jsonKey.put("company_id","a");
-        jsonKey.put("year","2021");
-        JSONObject jsonValue=new JSONObject();
-        jsonValue.put("a","1");
-        jsonValue.put("b","2");
-        jsonValue.put("c","3");
-        dataMap.put(jsonKey,jsonValue);
+        JSONObject jsonKey = new JSONObject();
+        jsonKey.put("company_id", "a");
+        jsonKey.put("year", "2021");
+        JSONObject jsonValue = new JSONObject();
+        jsonValue.put("a", "1");
+        jsonValue.put("b", "2");
+        jsonValue.put("c", "3");
+        dataMap.put(jsonKey, jsonValue);
 
         Collection<JSONObject> values = dataMap.values();
         JSONObject[] jsonObjects = values.toArray(new JSONObject[0]);
         List<JSONObject> jsonObjectList = Arrays.asList(jsonObjects);
         System.out.println();
+    }
+
+    @org.junit.Test
+    public void test4() {
+        String str = "[\"gw1\",\"gw2\"]";
+        //String str = "[\"3.28-6.47\"]";
+        str = str.replaceAll("\\[", "");
+        str = str.replaceAll("\\]", "");
+        str = str.replaceAll("\\\"", "");
+
+        System.out.println(str);
+
+        List<String> collect = Stream.of(str.split(",")).collect(toList());
+        System.out.println(collect);
+    }
+
+    @org.junit.Test
+    public void test5() {
+        String value = "";
+        String v = new BigDecimal(String.valueOf(value)).setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        System.out.println(v);
+    }
+
+    @org.junit.Test
+    public void test6() {
+        double random = Math.random();
+        System.out.println(random * 100);
+    }
+
+    @org.junit.Test
+    public void test7() {
+        JSONObject json = new JSONObject();
+        json.put("1", 10);
+        json.put("2", 5);
+        json.put("3", 20);
+
+        //根据json的value进行排序
+        JSONObject resJson = new JSONObject();
+        List<Map.Entry<String, Object>> collect = json.entrySet().stream().sorted(Comparator.comparing(s -> -1 * (Integer) s.getValue()))
+            .collect(toList());
+        System.out.println(collect);
+
+        JSONObject j = new JSONObject(new LinkedHashMap<>());
+        collect.stream().map(m -> j.put(m.getKey(), m.getValue())).collect(toList());
+        System.out.println(j);
+    }
+
+    @org.junit.Test
+    public void test8() {
+        aaa:
+        for (int j = 0; j < 3; j++) { // j=0 外层for循环
+            bbb:
+            for (int i = 0; i < 2; i++) { // i=0 内层for循环
+                System.out.println("hello world"); // 1
+                if (j == 1) {
+                    break aaa;
+                }
+            }
+        }
     }
 }
