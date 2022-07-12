@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -149,6 +150,17 @@ public class Test {
                     break aaa;
                 }
             }
+        }
+    }
+
+    @org.junit.Test
+    public void test9() {
+        String regx = "^[0-9]+°[0-9]+'([0-9]+|[0-9]+\\.[0-9]+)\\\"$";
+        Pattern pattern = Pattern.compile(regx);
+        if (pattern.matcher("111°11'11\"").matches()) {
+            System.out.println("success");
+        } else {
+            System.out.println("false");
         }
     }
 }
