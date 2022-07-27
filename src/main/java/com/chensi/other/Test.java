@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -162,5 +163,19 @@ public class Test {
         } else {
             System.out.println("false");
         }
+    }
+
+    @org.junit.Test
+    public void test10() {
+        String s = "FFFF";
+        String[] split = s.split("");
+        System.out.println();
+
+        String binary = "87";
+        int decimals = 2;
+        int i = Integer.parseInt(binary, 16);
+        String vStr = String.valueOf(i / Math.pow(10, decimals));
+
+        System.out.println(vStr);
     }
 }
