@@ -163,8 +163,8 @@ public class DateTest {
         LocalDateTime localDateTime1 = now.minusMinutes(5);
         System.out.println(localDateTime1);
 
-        Duration between = Duration.between(localDateTime, now);
-        System.out.println(between.toMillis());
+        Duration between = Duration.between(now, localDateTime1);
+        System.out.println(between.toMinutes());
     }
 
     @Test

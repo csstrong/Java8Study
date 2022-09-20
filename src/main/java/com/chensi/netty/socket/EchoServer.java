@@ -1,4 +1,4 @@
-package com.chensi.socket;
+package com.chensi.netty.socket;
 
 import java.io.*;
 import java.net.ServerSocket;

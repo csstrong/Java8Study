@@ -2,10 +2,14 @@ package com.chensi.other;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Data;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -178,4 +182,83 @@ public class Test {
 
         System.out.println(vStr);
     }
+
+    @org.junit.Test
+    public void test11() {
+        for (int i = 0; i < 10; i++) {
+            int v = new Random().nextInt(2) + 1;
+            System.out.println(v);
+        }
+    }
+
+    @org.junit.Test
+    public void test12() {
+        JSONObject json1 = new JSONObject();
+        JSONObject json2 = new JSONObject();
+        json1.put("one", 1);
+        json1.put("two", 2);
+        json1.put("three", 3);
+
+        json2.put("two", 4);
+        json2.put("three", 5);
+        json2.put("four", 6);
+
+        json1.putAll(json2);
+
+        System.out.println(json1.toJSONString());
+        System.out.println(json2.toJSONString());
+    }
+
+    @org.junit.Test
+    public void isMatcherValue() {
+        String key = "chensi";
+        String text = "chensi111";
+        String regx = "(" + key + ")";
+        Pattern pattern = Pattern.compile(regx);
+        Matcher mather = pattern.matcher(text);
+        if (!mather.find()) {
+            System.out.println("false");
+        } else {
+            System.out.println("true");
+        }
+    }
+
+    @Data
+    class User {
+        private Long id;
+        private String userName;
+    }
+
+    @Data
+    class Account {
+        private Long id;
+        private String userName;
+    }
+
+    List<Account> accounts = new ArrayList();
+    List<User> users = new ArrayList();
+
+    public Map<Long, String> getIdNameMap(List<User> users) {
+        return users.stream().collect(Collectors.toMap(User::getId, User::getUserName));
+    }
+
+    //第二种：将id和实体Bean做为K,V account -> account是一个返回本身的lambda表达式，后面的使用Function接口中的一个默认方法代替，使整个方法更简洁优雅。
+    public Map<Long, Account> getIdAccountMap(List<Account> accounts) {
+        return accounts.stream().collect(Collectors.toMap(Account::getId, account -> account));
+    }
+
+    public Map<Long, Account> getIdAccountMap2(List<Account> accounts) {
+        return accounts.stream().collect(Collectors.toMap(Account::getId, Function.identity()));
+    }
+
+    //第三种： key存在重复记录时处理,如果使用第一种方法会出错，所以这里只是简单的使用后者覆盖前者来解决key重复问题
+    public Map<String, Account> getNameAccountMap(List<Account> accounts) {
+        return accounts.stream().collect(Collectors.toMap(Account::getUserName, Function.identity(), (key1, key2) -> key2));
+    }
+
+    //第四种： 使用某个具体的Map类来保存，如保存时使用LinkedHashMap
+    public Map<String, Account> getNameAccountMap2(List<Account> accounts) {
+        return accounts.stream().collect(Collectors.toMap(Account::getUserName, Function.identity(), (key1, key2) -> key2, LinkedHashMap::new));
+    }
+
 }

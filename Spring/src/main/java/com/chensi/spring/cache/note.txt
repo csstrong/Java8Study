@@ -1,0 +1,20 @@
+1.@Configuration(proxyBeanMethods = false)
+    1、proxyBeanMethods=true，Full 全模式，如不指定则默认为 true，@Bean 修饰的方法会被代理。
+    2、proxyBeanMethods=false，Lite 轻量级模式，@Bean 修饰的方法不会被代理。
+    3、仔细观察 proxyBeanMethods 这个词语，顾名思义，是代理方法的（仅指代被 @Bean 注解的方法哦），所以它的作用肯定是跟当前这个 @Configuration 中的 Bean方法有关的。
+    4、在同一个 @Configuration 配置类中，值为 true 时，某方法直接调用其他的 Bean方法获取 Bean（方法返回值是Bean对象）时，不会创建新的 Bean，而是会从 Spring 容器中直接提取（如果容器中没有则会同放入容器中）。
+    5、当值为 false 时，与第4点区别的是 “像调用普通的Java方法一样，每次都会完整的执行方法，然后返回一个全新的对象”，因为 false 的意思就是不要代理我的方法（不代理就没有前置逻辑就原汁原味方法调用呗）。
+    6、如果你的同一个 Configuration 配置类中的多个Bean方法之间没有这样互相调用的需求，那么建议使用 Lite轻量级模式（设置 proxyBeanMethods=false），以提高 SpringBoot 的启动速度和性能。
+
+2.使用Spring缓存抽象时需要关注以下两点：
+    确定方法需要被缓存以及他们的缓存策略；从缓存中读取之前缓存存储的数据。
+    缓存注解：
+    Cache:缓存操作，定义缓存操作。实现有：RedisCache/EhCacheCache/ConcurrentMapCache等
+    CacheManager:缓存管理器，管理各种缓存组件
+    @Cacheable:主要针对方法配置，能够根据方法的请求参数对其进行缓存
+    @CacheEvict:清空缓存
+    @CachePut:与@Cacheable区别在于是否每次都调用方法，常用于更新，保证方法被调用，又希望结果被缓存。
+    @EnableCaching:开启基于注解的缓存
+    KeyGenerator:缓存数据时key生成策略
+    serialize:缓存数据时value序列化策略
+    @CacheConfig:统一配置类的缓存注解的属性

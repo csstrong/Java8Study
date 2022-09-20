@@ -132,7 +132,7 @@ public class Test {
     }
 
 
-    public static Executor getEsecutor(List<Shop> shops) {
+    public static Executor getExecutor(List<Shop> shops) {
         Executor executor =
             Executors.newFixedThreadPool(Math.min(shops.size(), 100),
                 new ThreadFactory() {
@@ -182,17 +182,7 @@ public class Test {
      * @return 220706660147
      */
     public static List<String> findPrices3(List<Shop> shops, String product) {
-        Executor executor =
-            Executors.newFixedThreadPool(Math.min(shops.size(), 100),
-                new ThreadFactory() {
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        Thread t = new Thread(r);
-                        //使用守护线程，这种方式不会阻止程序的关停
-                        t.setDaemon(true);
-                        return t;
-                    }
-                });
+        Executor executor = getExecutor(shops);
 
         List<CompletableFuture<String>> priceFutures = shops.stream()
             //使用CompletableFuture以异步方式计算每种商品的价格
@@ -215,7 +205,7 @@ public class Test {
 
     //构造同步和异步操作
     public static List<String> findPrices5(List<Shop> shops, String product) {
-        Executor executor = getEsecutor(shops);
+        Executor executor = getExecutor(shops);
         List<CompletableFuture<String>> priceFutures = shops.stream()
             .map(shop -> CompletableFuture.supplyAsync(
                 () -> shop.getPrice2(product), executor
@@ -237,7 +227,7 @@ public class Test {
 
     //重构findPrices方法返回一个由Future构成的流
     public Stream<CompletableFuture<String>> findPricesStream(List<Shop> shops, String product) {
-        Executor executor = getEsecutor(shops);
+        Executor executor = getExecutor(shops);
         return shops.stream()
             .map(shop -> CompletableFuture.supplyAsync(
                 () -> shop.getPrice2(product), executor))

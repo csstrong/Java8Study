@@ -1,4 +1,4 @@
-package com.chensi.socket;
+package com.chensi.netty.socket;
 
 import org.junit.Test;
 
