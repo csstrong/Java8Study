@@ -1,0 +1,15 @@
+server:
+  port:9992
+spring:
+  application:
+    name: rabbitmq-boot
+  rabbitmq:
+    host: 110.40.151.182
+    port: 83
+    username: guest
+    password: guest
+    virtual-host: /habi
+    # 配置这个解决work模式中能者多劳的问题
+    listener:
+      simple:
+        prefetch: 1 # 每个消费者每次可以消费一个
