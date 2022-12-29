@@ -1,4 +1,4 @@
-package com.chensi.netty.mknetty.two;
+package com.chensi.netty.mknetty.chapter2;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -25,7 +25,7 @@ public class EchoServer {
         //    System.out.println("The is " + EchoServer.class.getSimpleName());
         //}
         //int port = Integer.parseInt(args[0]);
-        int port =9090;
+        int port = 9090;
         new EchoServer(port).start();
     }
 

@@ -17,9 +17,9 @@ public class RabbitMqUtil {
 
     private static final String Host = "110.40.151.182";
 
-    private static final int Port = 83;
+    private static final int Port = 1003;
 
-    private static final String VirtualHost = "";
+    private static final String VirtualHost = "/";
 
     private static final String UserName = "guest";
 

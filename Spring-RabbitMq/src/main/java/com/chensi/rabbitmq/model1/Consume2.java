@@ -18,7 +18,7 @@ public class Consume2 {
         //获取通道对象
         Channel channel = connection.createChannel();
         //通道绑定队列
-        channel.queueDeclare("wangRabbitMqWork", true, false, false, null);
+        channel.queueDeclare("cs_queue", true, false, false, null);
 
         //每次只取一条，消费完再取，确保消息不丢失
         channel.basicQos(1);
@@ -33,7 +33,7 @@ public class Consume2 {
 
         //消费消息 参数2 关闭消息自动确认，因为当它为true时，不管下面的代码是否正常执行，
         //它就向消息队列自动确认,这时队列会删除消息，这就会产生消息丢失问题
-        channel.basicConsume("wangRabbitMqWork", false, new DefaultConsumer(channel) {
+        channel.basicConsume("cs_queue", false, new DefaultConsumer(channel) {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 System.out.println("消费者2号 = " + new String(body));
 

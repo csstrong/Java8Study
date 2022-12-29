@@ -5,6 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -19,6 +26,27 @@ import static java.util.stream.Collectors.toList;
  * @date 2022/3/1 10:58
  ***********************************/
 public class Test {
+
+    @org.junit.Test
+    public void test13() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime firstDayOfMonth = LocalDateTime.of(LocalDate.from(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth())), LocalTime.MIN);
+        LocalDateTime lastDayOfMonth = LocalDateTime.of(LocalDate.from(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth())), LocalTime.MAX);
+
+        int start = now.getDayOfMonth();
+        int end = lastDayOfMonth.getDayOfMonth();
+
+        for (int i = start; i <= end; i++) {
+            //insert
+            LocalDateTime localDateTime = now.withDayOfMonth(i);
+            System.out.println(localDateTime.format(dateTimeFormatter));
+            DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+            String displayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.CHINESE);
+            System.out.println(displayName);
+        }
+    }
+
     @org.junit.Test
     public void testBigDecimal() {
         BigDecimal bigDecimal = new BigDecimal(String.valueOf(0.00)).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -259,4 +287,19 @@ public class Test {
         return accounts.stream().collect(Collectors.toMap(Account::getUserName, Function.identity(), (key1, key2) -> key2, LinkedHashMap::new));
     }
 
+    @org.junit.Test
+    public void test14(){
+
+        boolean flag = Boolean.parseBoolean("True");
+        boolean flag2 = Boolean.parseBoolean("true");
+        System.out.println(flag);
+        System.out.println(flag2);
+    }
+
+    @org.junit.Test
+    public void test15(){
+        double res = new BigDecimal(String.valueOf(2)).
+            divide(new BigDecimal(7), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        System.out.println(res);
+    }
 }

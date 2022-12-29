@@ -1,4 +1,4 @@
-package com.chensi.netty.mknetty.two;
+package com.chensi.netty.mknetty.chapter2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -1,7 +1,11 @@
 package com.chensi.spring.cache.config;
 
-import org.springframework.cache.interceptor.KeyGenerator;
+import org.redisson.Redisson;
+import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +14,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -23,6 +28,19 @@ import java.util.Map;
  */
 @Configuration
 public class RedisConfig {
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+
+    @Value("${spring.redis.host}")
+    private String dbHost;
+
+    @Value("${spring.redis.port}")
+    private String dbPort;
+
+    @Value("${spring.redis.database}")
+    private String dbNum;
+
 
     /**
      * @param redisConnectionFactory redis连接工厂
@@ -93,16 +111,21 @@ public class RedisConfig {
      */
     @Bean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        GenericJackson2JsonRedisSerializer serializer = serializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+
+        //Json序列化配置
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        //String序列化
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         //key采用String的序列化方式
-        redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
-        //value序列化方式采用jackson
-        redisTemplate.setValueSerializer(serializer);
+        redisTemplate.setKeySerializer(stringRedisSerializer);
         // hash的key也采用String的序列化方式
-        redisTemplate.setHashKeySerializer(StringRedisSerializer.UTF_8);
-        //hash的value序列化方式采用jackson
-        redisTemplate.setHashValueSerializer(serializer);
+        redisTemplate.setHashKeySerializer(stringRedisSerializer);
+
+        // value的序列化方式（json序列化）
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        // hash的value序列化方式（json序列化）
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
@@ -110,5 +133,12 @@ public class RedisConfig {
 
     public GenericJackson2JsonRedisSerializer serializer() {
         return new GenericJackson2JsonRedisSerializer();
+    }
+
+    @Bean
+    public Redisson redisson() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://" + dbHost + ":" + dbPort).setDatabase(Integer.parseInt(dbNum));
+        return (Redisson) Redisson.create(config);
     }
 }
