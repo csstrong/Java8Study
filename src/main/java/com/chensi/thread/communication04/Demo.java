@@ -5,6 +5,7 @@ package com.chensi.thread.communication04;
  * @date  2023/1/4
  */
 
+import java.util.Collections;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
