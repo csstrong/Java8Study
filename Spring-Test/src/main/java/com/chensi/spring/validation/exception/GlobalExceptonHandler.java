@@ -27,7 +27,6 @@ public class GlobalExceptonHandler {
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public List<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
 		BindingResult bindingResult = e.getBindingResult();
-
 		List<String> message = bindingResult.getAllErrors().stream()
 			.map(m -> m.getDefaultMessage()).collect(Collectors.toList());
 		return message;

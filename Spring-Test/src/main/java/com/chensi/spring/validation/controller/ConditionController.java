@@ -19,14 +19,14 @@ public class ConditionController {
 
 	@RequestMapping(path = "/query", method = RequestMethod.POST)
 	@ResponseBody
-	public void test(String condition, HttpServletResponse response) {
+	public void test(String condition) {
 		System.out.println(condition);
 		return;
 	}
 
 	@RequestMapping(path = "/query2", method = RequestMethod.POST)
 	@ResponseBody
-	public void test2(@ConditionParse(Site.class) @Validated List<QueryCondition> condition, HttpServletResponse response) {
+	public void test2(@ConditionParse(Site.class) @Validated List<QueryCondition> condition) {
 		System.out.println(condition);
 		return;
 	}

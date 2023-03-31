@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.chensi.spring.validation.base.FieldType;
 import com.chensi.spring.validation.base.QueryCondition;
 import com.chensi.spring.validation.base.Relational;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,8 +12,10 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.ValidationAnnotationUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,9 +27,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * @author  chensi
@@ -93,7 +97,12 @@ public class ArgumentResolver implements HandlerMethodArgumentResolver {
 			return null;
 		}
 		//解析参数
-		List<QueryCondition> queryConditions = parseCondition(condition);
+		List<QueryCondition> queryConditions = new ArrayList<>();
+		try {
+			queryConditions = parseCondition(condition, parameter);
+		} catch (MethodArgumentNotValidException e) {
+			throw e;
+		}
 
 		//组织json
 		JSONObject queryJson = new JSONObject();
@@ -105,25 +114,67 @@ public class ArgumentResolver implements HandlerMethodArgumentResolver {
 			}
 		}
 
-		//json 转实体模型 并校验
-		String queryStr = queryJson.toString();
-		Class clazz = getValidationClass(parameter);
-		Object obj = objectMapper.readValue(queryStr, clazz);
-		Class<?> aClass = obj.getClass();
-		String name = aClass.getSimpleName();
 		if (binderFactory != null) {
-			WebDataBinder binder = binderFactory.createBinder(webRequest, obj, name);
-			if (obj != null) {
-				validateIfApplicable(binder, parameter);
-				if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
-					throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
+			//json 转实体模型 并校验
+			String queryStr = queryJson.toString();
+			Class clazz = getValidationClass(parameter);
+			Object obj = null;
+			String name = null;
+			WebDataBinder binder = null;
+			if (clazz != null) {
+				obj = objectMapper.readValue(queryStr, clazz);
+				//判断是否反序列化成功
+				boolean b = deserializerIfSuccess(obj, queryJson);
+				if (b) {
+					Class<?> aClass = obj.getClass();
+					name = aClass.getSimpleName();
+					binder = binderFactory.createBinder(webRequest, obj, name);
+				} else {
+					throw new MethodArgumentNotValidException(parameter, getBindingResult());
 				}
+			}
+			if (binder != null) {
+				validateIfApplicable(binder, parameter);
+			}
+			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
+				throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
 			}
 			if (mavContainer != null) {
 				mavContainer.addAttribute(BindingResult.MODEL_KEY_PREFIX + name, binder.getBindingResult());
 			}
 		}
 		return queryConditions;
+	}
+
+	protected boolean deserializerIfSuccess(Object obj, JSONObject queryJson) throws IllegalAccessException {
+		Class<?> cls = obj.getClass();
+		Field[] fields = cls.getDeclaredFields();
+		List<String> keyList = new ArrayList<>(queryJson.keySet());
+
+		List<Boolean> statusL = new ArrayList<>();
+		for (String s : keyList) {
+			boolean status = false;
+			for (int i = 0; i < fields.length; i++) {
+				Field f = fields[i];
+				f.setAccessible(true);
+				JsonAlias jsonAlias = f.getAnnotation(JsonAlias.class);
+				if (jsonAlias != null) {
+					String[] value = jsonAlias.value();
+					if (value.length > 0) {
+						String aliasName = value[0];
+						if (s.equals(aliasName)) {
+							Object o = f.get(obj);
+							if (o != null) {
+								status = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+			statusL.add(status);
+		}
+		return statusL.stream().allMatch(a -> a.equals(true));
 	}
 
 	protected Class getValidationClass(MethodParameter parameter) {
@@ -161,7 +212,7 @@ public class ArgumentResolver implements HandlerMethodArgumentResolver {
 		return !hasBindingResult;
 	}
 
-	private List<QueryCondition> parseCondition(String condition) {
+	private List<QueryCondition> parseCondition(String condition, MethodParameter parameter) throws MethodArgumentNotValidException {
 		List<QueryCondition> fieldList = new ArrayList<>();
 		if (condition == null || condition.isEmpty()) {
 			return fieldList;
@@ -169,35 +220,45 @@ public class ArgumentResolver implements HandlerMethodArgumentResolver {
 		List<String> likeFieldList = new ArrayList<>();
 		List<String> inFieldList = new ArrayList<>();
 
-		JSONObject object = JSONObject.parseObject(condition);
+		try {
+			JSONObject object = JSONObject.parseObject(condition);
 
-		if (object.containsKey("Like")) {
-			List like = object.getObject("Like", List.class);
-			likeFieldList.addAll(like);
-			object.remove("Like");
-		}
-		if (object.containsKey("In")) {
-			List in = object.getObject("In", List.class);
-			inFieldList.addAll(in);
-			object.remove("In");
-		}
-
-		for (Map.Entry<String, Object> entry : object.entrySet()) {
-			QueryCondition field = new QueryCondition();
-			String name = entry.getKey();
-			Object value = entry.getValue();
-			field.setFieldName(name);
-			field.setValue(value);
-			field.setType(FieldType.String);
-
-			if (likeFieldList.contains(name)) {
-				field.setRelationalOptor(Relational.Like);
+			if (object.containsKey("Like")) {
+				List like = object.getObject("Like", List.class);
+				likeFieldList.addAll(like);
+				object.remove("Like");
 			}
-			if (inFieldList.contains(name)) {
-				field.setRelationalOptor(Relational.In);
+			if (object.containsKey("In")) {
+				List in = object.getObject("In", List.class);
+				inFieldList.addAll(in);
+				object.remove("In");
 			}
-			fieldList.add(field);
+
+			for (Map.Entry<String, Object> entry : object.entrySet()) {
+				QueryCondition field = new QueryCondition();
+				String name = entry.getKey();
+				Object value = entry.getValue();
+				field.setFieldName(name);
+				field.setValue(value);
+				field.setType(FieldType.String);
+
+				if (likeFieldList.contains(name)) {
+					field.setRelationalOptor(Relational.Like);
+				}
+				if (inFieldList.contains(name)) {
+					field.setRelationalOptor(Relational.In);
+				}
+				fieldList.add(field);
+			}
+		} catch (Exception e) {
+			throw new MethodArgumentNotValidException(parameter, getBindingResult());
 		}
 		return fieldList;
+	}
+
+	private BeanPropertyBindingResult getBindingResult() {
+		BeanPropertyBindingResult beanPropertyBindingResult = new BeanPropertyBindingResult(new Object(), "");
+		beanPropertyBindingResult.addError(new ObjectError("condition", "condition参数格式或参数名称错误！"));
+		return beanPropertyBindingResult;
 	}
 }
