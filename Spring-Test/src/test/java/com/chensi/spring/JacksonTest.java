@@ -33,7 +33,7 @@ public class JacksonTest {
 		//配置序列化的美化输出，true表示开启美化输出
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		//表示：在反序列化时，针对哪些目标对象中没有的属性jackson会直接忽略掉，就能反序列化成功
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		//objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		//将驼峰转下划线
 		objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
@@ -76,6 +76,19 @@ public class JacksonTest {
 		String s = objectMapper.writeValueAsString(test2);
 		System.out.println(s); // {"decimal":"1.0000"}
 	}
-
+	
+	@Test
+	public  void test5() throws JsonProcessingException{
+		User user= new User ();
+		user.setId(1L);
+		user.setName(null);
+		user.setPwd("123");
+		user.setAddr("河南");
+		user.setWebstieUrl("http://www.baidu.com");
+		user.setRegisterDate(new Date());
+		user.setBirthDay(LocalDateTime.now());
+		String jsonStr = objectMapper.writeValueAsString(user);
+		System.out.println(jsonStr);
+	}
 }
 
