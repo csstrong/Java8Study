@@ -1,4 +1,4 @@
-package com.chensi.spring.cache.utils;
+package com.chensi.spring.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class RedisUtil {
+
     @Autowired
     private RedisTemplate redisTemplate;
 

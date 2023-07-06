@@ -1,4 +1,4 @@
-package com.chensi.spring.cache.service;
+package com.chensi.spring.service;
 
 /*
  * @author  chensi

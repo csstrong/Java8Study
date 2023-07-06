@@ -1,4 +1,4 @@
-package com.chensi.spring.cache.config;
+package com.chensi.spring.config;
 
 import org.redisson.Redisson;
 import org.redisson.config.Config;

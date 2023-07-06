@@ -2,10 +2,9 @@ package com.chensi.spring;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.chensi.cache.utils.RedisUtil;
+import com.chensi.spring.utils.RedisUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
@@ -17,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootTest
-@ComponentScan(basePackages = {"com.chensi.cache"})
 class ApplicationTests {
 
 	@Test
@@ -28,7 +26,7 @@ class ApplicationTests {
 	@Resource
 	private RedisTemplate redisTemplate;
 
-	//@Autowired
+	@Resource
 	private RedisUtil redisUtil;
 
 	@Test
