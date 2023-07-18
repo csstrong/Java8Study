@@ -2,7 +2,7 @@ package com.chensi.spring.config;
 
 import org.redisson.Redisson;
 import org.redisson.config.Config;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.redisson.config.SingleServerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
@@ -29,9 +29,6 @@ import java.util.Map;
 @Configuration
 public class RedisConfig {
 
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
-
     @Value("${spring.redis.host}")
     private String dbHost;
 
@@ -41,7 +38,8 @@ public class RedisConfig {
     @Value("${spring.redis.database}")
     private String dbNum;
 
-
+    @Value("${spring.redis.password}")
+    private String password;
     /**
      * @param redisConnectionFactory redis连接工厂
      * @功能描述 redis作为缓存时配置缓存管理器CacheManager，主要配置序列化方式、自定义
@@ -128,6 +126,7 @@ public class RedisConfig {
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
         redisTemplate.setConnectionFactory(redisConnectionFactory);
+
         return redisTemplate;
     }
 
@@ -138,7 +137,13 @@ public class RedisConfig {
     @Bean
     public Redisson redisson() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://" + dbHost + ":" + dbPort).setDatabase(Integer.parseInt(dbNum));
+        SingleServerConfig singleServerConfig = config.useSingleServer();
+        singleServerConfig.setAddress("redis://" + dbHost + ":" + dbPort).setDatabase(Integer.parseInt(dbNum));
+        if (password != null && !"".equals(password)) {
+            singleServerConfig.setPassword(password);
+        }
+        //心跳
+        singleServerConfig.setPingConnectionInterval(1000);
         return (Redisson) Redisson.create(config);
     }
 }

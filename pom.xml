@@ -12,7 +12,7 @@
         <module>Spring-RabbitMq</module>
         <module>Spring-Test</module>
         <module>Springboot-dubbo</module>
-        <module>Spring-Redis</module>
+        <module>Spring-DataBase</module>
     </modules>
     <dependencies>
         <dependency>

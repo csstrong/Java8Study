@@ -2,7 +2,6 @@ package com.chensi.spring;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.chensi.spring.utils.RedisUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -26,24 +25,19 @@ class ApplicationTests {
 	@Resource
 	private RedisTemplate redisTemplate;
 
-	@Resource
-	private RedisUtil redisUtil;
+	//@Resource
+	//private RedisUtil redisUtil;
 
-	@Test
-	public void redisTest() {
-
-	}
-
-	@Test
-	public void redisTest2() {
-		//未序列化
-		redisUtil.set("message", "你好,habi！");
-	}
-
-	@Test
-	public void redisTest3() {
-		redisUtil.set("message", "你好,habi！");
-	}
+	//@Test
+	//public void redisTest2() {
+	//	//未序列化
+	//	redisUtil.set("message", "你好,habi！");
+	//}
+	//
+	//@Test
+	//public void redisTest3() {
+	//	redisUtil.set("message", "你好,habi！");
+	//}
 
 	@Test
 	public void processRedisDirtyKey() {
