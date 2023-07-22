@@ -1,5 +1,13 @@
 package com.chensi.spring.config;
 
+import io.lettuce.core.resource.ClientResources;
+import io.lettuce.core.resource.NettyCustomizer;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.redisson.Redisson;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
@@ -12,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -108,7 +117,7 @@ public class RedisConfig {
      * 因此一般修改RedisTemplate的序列化为方式为JSON方式【建议使用GenericJackson2JsonRedisSerializer】
      */
     @Bean(name = "redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         //Json序列化配置
@@ -145,5 +154,32 @@ public class RedisConfig {
         //心跳
         singleServerConfig.setPingConnectionInterval(1000);
         return (Redisson) Redisson.create(config);
+    }
+
+    @Bean
+    public ClientResources clientResources(){
+        NettyCustomizer nettyCustomizer = new NettyCustomizer() {
+            @Override
+            public void afterChannelInitialized(Channel channel) {
+                channel.pipeline().addLast(
+                    new IdleStateHandler(600, 0, 0));
+                channel.pipeline().addLast(new ChannelDuplexHandler() {
+                    @Override
+                    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                        if (evt instanceof IdleStateEvent) {
+                            //ctx.disconnect();
+                            System.out.println("redis断连...");
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void afterBootstrapInitialized(Bootstrap bootstrap) {
+                NettyCustomizer.super.afterBootstrapInitialized(bootstrap);
+                System.out.println("初始Netty客户端时调用 afterBootstrapInitialized ...");
+            }
+        };
+        return ClientResources.builder().nettyCustomizer(nettyCustomizer).build();
     }
 }

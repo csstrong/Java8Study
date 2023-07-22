@@ -9,6 +9,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -228,7 +232,7 @@ class ApplicationTests {
 	}
 
 	@Test
-	public void testPrintList(){
+	public void testPrintList() {
 		List<String> list = new LinkedList<>();
 		list.add("2");
 		list.add("1");
@@ -238,7 +242,7 @@ class ApplicationTests {
 	}
 
 	@Test
-	public void testJsonArray(){
+	public void testJsonArray() {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json1 = new JSONObject();
 		JSONObject json2 = new JSONObject();
@@ -253,9 +257,30 @@ class ApplicationTests {
 		jsonArray.add(json2);
 		jsonArray.remove(0);
 		jsonArray.add(json3);
-		jsonArray.add(1,json4);
+		jsonArray.add(1, json4);
 
 		System.out.println(jsonArray);
 	}
 
+	@Test
+	public void computeDuration() {
+		LocalDateTime sDate = LocalDateTime.now();
+		LocalDateTime eDate = sDate.minusMinutes(-30l);
+		Duration duration = Duration.between(sDate, eDate);
+		long minute = duration.toMinutes();
+		String dur = new BigDecimal(String.valueOf(minute))
+			.divide(new BigDecimal("60"), 2, RoundingMode.HALF_UP)
+			.toString();
+		System.out.println(dur);
+
+		Map<Object, Object> map = new HashMap<>();
+		map.put("hello", "world");
+		Object hello = map.get("hello");
+		Object cs = map.get("cs");
+		if (cs != null) {
+			System.out.println(cs);
+		}
+		System.out.println(hello);
+		System.out.println(cs);
+	}
 }
