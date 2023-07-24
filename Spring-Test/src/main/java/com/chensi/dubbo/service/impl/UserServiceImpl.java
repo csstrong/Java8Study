@@ -2,7 +2,7 @@ package com.chensi.dubbo.service.impl;
 
 import com.chensi.dubbo.bean.UserAddress;
 import com.chensi.dubbo.service.UserService;
-import org.apache.dubbo.config.annotation.DubboService;
+//import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * (interfaceClass = UserService.class, version = "1.0.0")
  */
 @Service
-@DubboService(interfaceClass = UserService.class, version = "1.0.0")
+//@DubboService(interfaceClass = UserService.class, version = "1.0.0")
 public class UserServiceImpl implements UserService {
 	@Value("${dubbo.application.name}")
 	private String applicationName;

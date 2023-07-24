@@ -4,13 +4,9 @@ import com.chensi.spring.service.RedisService;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
-import io.lettuce.core.resource.ClientResources;
-import io.lettuce.core.resource.NettyCustomizer;
-import org.redisson.api.RedissonClient;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -43,8 +39,8 @@ public class RedisServiceImpl implements RedisService {
 		//method1();
 		//method2();
 		//method3();
-		method5();
-		return "success";
+		boolean b = method5();
+		return String.valueOf(b);
 	}
 
 	public void method1() {
@@ -96,7 +92,7 @@ public class RedisServiceImpl implements RedisService {
 		}
 	}
 
-	public void method5() {
+	public boolean method5() {
 		boolean status = false;
 		//创建RedisURI对象，指定服务器的基本配置
 		RedisURI redisURI = RedisURI.builder()
@@ -116,13 +112,14 @@ public class RedisServiceImpl implements RedisService {
 		try {
 			redisClient.connect().async();
 			System.out.println("连接成功");
-			status = false;
+			status = true;
 		} catch (Exception e) {
 			System.out.println("连接失败：" + e.getMessage());
+			return false;
 		} finally {
 			redisClient.shutdown();
 		}
-		System.out.println(status);
+		return status;
 	}
 
 }
