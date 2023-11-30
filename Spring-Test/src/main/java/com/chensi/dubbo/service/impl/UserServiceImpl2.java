@@ -7,7 +7,7 @@ package com.chensi.dubbo.service.impl;
 
 import com.chensi.dubbo.bean.UserAddress;
 import com.chensi.dubbo.service.UserService;
-import org.apache.dubbo.config.annotation.DubboService;
+//import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * 2.让服务消费者从注册中心订阅服务提供者的相关服务
  */
 @Service
-@DubboService(interfaceClass = UserService.class, version = "2.0.0")
+//@DubboService(interfaceClass = UserService.class, version = "2.0.0")
 public class UserServiceImpl2 implements UserService {
 
 	//The default value of ${dubbo.application.name} is ${spring.application.name}
