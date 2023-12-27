@@ -96,6 +96,7 @@ public class Test {
 		System.out.println(queue);
 	}
 
+	//正态分布
 	@org.junit.Test
 	public void test05() {
 		Random random = new Random();
@@ -120,6 +121,7 @@ public class Test {
 		valList.stream().sorted().forEach(System.out::println);
 	}
 
+	//指数分布
 	@org.junit.Test
 	public void test06() {
 		int numberOfRandomNumbers = 10; // 生成随机数的数量
@@ -132,6 +134,59 @@ public class Test {
 			double v = 10 + (1 - x) * (100 - 10); // 将计算出的随机数限制在10到100之间
 			System.out.println("随机数 " + (i + 1) + ": " + v + "x :" + (1 - x));
 		}
+	}
+
+	@org.junit.Test
+	public void test07(){
+		int min = 1; // 最小值
+		int max = 12; // 最大值
+
+		Random random = new Random();
+		for(int i=0;i<100;i++) {
+			int randomNumber = random.nextInt(max - min) + min;
+
+			System.out.println("生成的随机整数为： " + randomNumber);
+		}
+	}
+
+	@org.junit.Test
+	public void test08(){
+		int minutes = 59;
+		int roundedMinutes = roundToNearestTen(minutes);
+		System.out.println("原始分钟数： " + minutes);
+		System.out.println("归整后的分钟数： " + roundedMinutes);
+	}
+
+	public static int roundToNearestTen(int minutes) {
+		double floatMinutes = (double) minutes / 10;
+		int roundedMinutes = (int)Math.floor(floatMinutes) * 10;
+		return roundedMinutes;
+	}
+
+	@org.junit.Test
+	public void test09() {
+		String str1 = "";
+		String str2 = "123";
+		String str3 = "123.45";
+		String str4 = "abc";
+
+		System.out.println("str1是否为空：" + isEmpty(str1));
+		System.out.println("str2是否为空：" + isEmpty(str2));
+		System.out.println("str3是否为空：" + isEmpty(str3));
+		System.out.println("str4是否为空：" + isEmpty(str4));
+
+		System.out.println("str1是否能转为数字：" + isNumber(str1));
+		System.out.println("str2是否能转为数字：" + isNumber(str2));
+		System.out.println("str3是否能转为数字：" + isNumber(str3));
+		System.out.println("str4是否能转为数字：" + isNumber(str4));
+	}
+
+	public static boolean isEmpty(String str) {
+		return str == null || str.matches("^$");
+	}
+
+	public static boolean isNumber(String str) {
+		return str != null && str.matches("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$");
 	}
 
 }
